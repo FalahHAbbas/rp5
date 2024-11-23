@@ -6,39 +6,20 @@ import com.falah.test.services.GatesService;
 import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Scanner;
-
 public class Main {
     private static final GatesService gatesService = new GatesService();
+    private static final int full = 0;
 
     public static void main(@NotNull String[] args) {
-//        new GateController(GateController.COMMAND.OPEN).execute();
-//        new GateController(GateController.COMMAND.CLOSE).execute();
+        new GateController(GateController.COMMAND.OPEN).execute();
+        new GateController(GateController.COMMAND.CLOSE).execute();
 
         new Thread(new Reader((qrData) -> {
             Gson gson = new Gson();
             Trip trip;
             try {
                 trip = gson.fromJson(qrData, Trip.class);
-                new ScaleService(weight -> {
-                    System.out.println("Weight changed: " + weight + " kg" +
-                                       "\nIs the vehicle full? (0/1)");
-                    var full = new Scanner(System.in).nextInt();
-                    gatesService.weight(trip, weight * 1000, full == 0, (result, message) -> {
-                        if (result != null && result) {
-//                            new GateController(GateController.COMMAND.OPEN).execute();
-//                            new GateController(GateController.COMMAND.CLOSE).execute();
-                        } else {
-                            System.out.println(message);
-                        }
-                    });
-
-
-                }).run();
-
-
-                /*
-                gatesService.action(trip, Trip.ACTION.ENTER_BEXY, (result, message) -> {
+                gatesService.action(trip, Trip.ACTION.EXIT_BEXY, (result, message) -> {
                     if (result != null && result) {
                         new GateController(GateController.COMMAND.OPEN).execute();
                         new GateController(GateController.COMMAND.CLOSE).execute();
@@ -47,13 +28,11 @@ public class Main {
                     }
                 });
 
-
-                */
             } catch (Exception e) {
 //                e.printStackTrace();
             }
 
-        }, args))
+        }, "usb-LWTEK_Barcode_Scanner_00000000011C-event-kbd", "1"))
                 .start()
         ;
     }

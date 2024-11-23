@@ -2,7 +2,7 @@
   <artifact type="jar" name="rp5:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/rp5_jar</output-path>
     <root id="archive" name="rp5.jar">
-      <element id="module-output" name="rp5" />
+      <element id="module-output" name="BexyController" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/xyz/cp74/evdev/1.0/evdev-1.0.jar" path-in-jar="/" />
     </root>
   </artifact>

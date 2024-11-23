@@ -6,18 +6,17 @@ import com.falah.test.models.Error;
 import com.falah.test.models.Trip;
 import com.falah.test.models.TripWeighted;
 import com.google.gson.Gson;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+import okhttp3.*;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
 public class GatesService {
 
+    public static String baseUrl = "https://dev-api-bexy.digital-logic-gen.com/api/";
 
-    public static final String BASE_URL = "https://bexy-api.digital-logic.tech/api/Reservations/";
-    public static final String BASE_URL_GATES = BASE_URL + "Gates/";
+    public static final String RESERVATIONS = baseUrl + "Reservations/";
+    public static final String BASE_URL_GATES = RESERVATIONS + "Gates/";
 
     public static final String ENTER_BEXY = "Enter-Bexy";
     public static final String ENTER_WAITING_YARD = "Enter-Waiting-Yard";
@@ -79,7 +78,7 @@ public class GatesService {
         tripWeight.setVehicleType(trip.getVehicleType());
         tripWeight.setWeight(weight);
         RequestBody body = RequestBody.create(gson.toJson(tripWeight), okhttp3.MediaType.parse("application/json"));
-        var url = BASE_URL + "Weighbridges/" + (fuull ? "Full" : "Empty");
+        var url = RESERVATIONS + "Weighbridges/" + (fuull ? "Full" : "Empty");
         Request request = new Request.Builder().url(url).put(body).build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -109,5 +108,62 @@ public class GatesService {
 
 
     }
+
+    public void enterWaitingYard(String tripId, OnCompleteListener<Boolean> listener) {
+        var url = baseUrl + "Reservations/Gates/Enter-Waiting-Yard";
+        var requestBody = "{" +
+                          "\"tripId\":\"" + tripId + "\"," +
+                          "\"vehicleType\": 0" +
+                          "}";
+        Request request = new Request.Builder().url(url).
+                put(RequestBody.create(requestBody, MediaType.get("application/json"))).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull okhttp3.Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                listener.onComplete(null, new Error(e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull okhttp3.Call call, @NotNull okhttp3.Response response) throws IOException {
+                String body = response.body().string();
+                if (!response.isSuccessful()) {
+                    var error = gson.fromJson(body, Error.class);
+                    listener.onComplete(null, error);
+                }
+                listener.onComplete(true, null);
+            }
+        });
+    }
+
+    public void exitExchangeYard(String tripId, OnCompleteListener<Boolean> listener) {
+        var url = baseUrl + "Reservations/Gates/Exit-Exchange-Yard";
+        var requestBody = "{" +
+                          "\"tripId\":\"" + tripId + "\"," +
+                          "\"vehicleType\": 0" +
+                          "}";
+        Request request = new Request.Builder().url(url).
+                put(RequestBody.create(requestBody, MediaType.get("application/json"))).build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull okhttp3.Call call, @NotNull IOException e) {
+                e.printStackTrace();
+                listener.onComplete(null, new Error(e.getMessage()));
+            }
+
+            @Override
+            public void onResponse(@NotNull okhttp3.Call call, @NotNull okhttp3.Response response) throws IOException {
+                String body = response.body().string();
+                if (!response.isSuccessful()) {
+                    var error = gson.fromJson(body, Error.class);
+                    listener.onComplete(null, error);
+                }
+                listener.onComplete(true, null);
+            }
+        });
+    }
+
 }
 
