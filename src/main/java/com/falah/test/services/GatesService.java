@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class GatesService {
 
-    public static String baseUrl = "https://dev-api-bexy.digital-logic-gen.com/api/";
+    public static String baseUrl = "https://progress-api-bexy.digital-logic-gen.com/api/";
 
     public static final String RESERVATIONS = baseUrl + "Reservations/";
     public static final String BASE_URL_GATES = RESERVATIONS + "Gates/";

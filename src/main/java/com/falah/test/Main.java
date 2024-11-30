@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class Main {
     private static final GatesService gatesService = new GatesService();
-    private static final int full = 0;
 
     public static void main(@NotNull String[] args) {
         new GateController(GateController.COMMAND.OPEN).execute();
@@ -32,7 +31,8 @@ public class Main {
 //                e.printStackTrace();
             }
 
-        }, "usb-LWTEK_Barcode_Scanner_00000000011C-event-kbd", "1"))
+        }, "usb-Linux_3.4.39_with_sunxi_usb_udc_HID_Gadget-event-kbd", "1"))
+//        }, args))
                 .start()
         ;
     }
